@@ -26,11 +26,13 @@ export class Result<T> {
   private inner_data?: T;
   private error?: Error;
   private constructor() {}
+
   static from_error<T>(error: Error): Result<T> {
     const result = new Result<T>();
     result.error = error;
     return result;
   }
+
   static from_data<T>(data: T): Result<T> {
     const result = new Result<T>();
     result.inner_data = data;
@@ -45,6 +47,19 @@ export class Result<T> {
   public data(): T | undefined {
     return this.inner_data;
   }
+
+  public unwrap(): T {
+    return this.data()!;
+  }
+
+  public unwrap_or(f: (e: Error) => T): T {
+    return this.inner_data || f(this.error!);
+  }
+
+  public unwrap_or_default(de: T): T {
+    return this.inner_data || de;
+  }
+
   public err(): Error | undefined {
     return this.error;
   }
