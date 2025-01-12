@@ -78,13 +78,14 @@ export async function readXpiInfo(
 /// parse the json
 export async function parseExtManifest(
   path: string,
+  textDecoder?: TextDecoder,
 ): Promise<Result<AddonInfo>> {
   if (!(await fs.exists(path))) {
     return Result.from_error(new Error(`path ${path} does not exist`));
   }
   const data = Deno.readFileSync(path);
-  const decode = new TextDecoder();
-  const doc = decode.decode(data);
+  const decoder = textDecoder || new TextDecoder();
+  const doc = decoder.decode(data);
   const webExtManifest = JSON.parse(doc);
   const details = {
     id: "",
